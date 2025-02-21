@@ -119,7 +119,7 @@ class EvaluationTest extends EvaluationController {
 				'valasztott-szak' => [ 'egyetem' => 'PPKE', 'kar' => 'BTK', 'szak' => 'Anglisztika' ],
 				'erettsegi-eredmenyek' => [
 					[ 'nev' => 'magyar nyelv és irodalom', 'tipus' => 'közép', 'eredmeny' => '70%' ],
-					[ 'nev' => 'történelem', 'tipus' => 'emelt', 'eredmeny' => '80%' ],
+					[ 'nev' => 'történelem', 'tipus' => 'közép', 'eredmeny' => '80%' ],
 					[ 'nev' => 'matematika', 'tipus' => 'közép', 'eredmeny' => '90%' ],
 					[ 'nev' => 'angol nyelv', 'tipus' => 'emelt', 'eredmeny' => '94%' ],
 					[ 'nev' => 'informatika', 'tipus' => 'közép', 'eredmeny' => '95%' ]
@@ -134,6 +134,8 @@ class EvaluationTest extends EvaluationController {
 	];
 	
 	public function test() {
+		$start = microtime(true);
+		
 		foreach($this->test_data as $id => $test) {
 			$student_data = $this->_load_student_data([ $test['case'] ]);
 			
@@ -152,8 +154,10 @@ class EvaluationTest extends EvaluationController {
 						$status = "FAILED";
 					}
 				}
-				echo "Test case " . $id . ". Result: " . $status . "<br/>";
+				echo "Test case " . ($id + 1) . ". Result: " . $status . "<br/>";
 			}
-		}	
+		}
+		
+		echo "<br/>Runtime: " . round((microtime(true) - $start) * 1000, 2) . " ms"; 
 	}
 }
