@@ -14,3 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'App\Http\Controllers\EvaluationController@index');
+
+Route::get('/test', 'App\Http\Controllers\Tests\EvaluationTest@test');

@@ -11,6 +11,7 @@ use App\Models\ExtraPoint;
 
 class EvaluationController extends Controller {
 	public const STR_ERROR = [
+		0	=> 'OK',
 		-1	=> 'Alaptantárgy nem sikerült!',
 		-2	=> 'Nem minden kötelező tárgyból tett vizsgát!',
 		-3	=> 'Kötelező vizsga nem teljesült!',
@@ -33,7 +34,7 @@ class EvaluationController extends Controller {
 			],
 			md5("PPKE_BTK_Anglisztika") => [
 				'required' => [ 
-					new Exam([ 'nev' => "matematika", 'tipus' => "emelt" ]) 
+					new Exam([ 'nev' => "angol nyelv", 'tipus' => "emelt" ]) 
 				],
 				'required_optional' => [ 
 					new Exam([ 'nev' => "francia", 'tipus' => "közép" ]),
@@ -51,7 +52,7 @@ class EvaluationController extends Controller {
 		$student_data = $this->_load_student_data();
 		
 		foreach($student_data as $id => $student) {
-			$result = $this->__evaluate($student);
+			$result = $this->_evaluate($student);
 			
 			if(isset($result['error'])) {
 				echo ($id + 1) . ". Sikertelen vizsga: " . $result['error'] . '<br/>';
@@ -61,9 +62,13 @@ class EvaluationController extends Controller {
 		}
     }
 	
-	protected function _load_student_data() {
-		$path = storage_path('app/public/homework_input.php');
-		$students_data = require_once($path);
+	protected function _load_student_data($input = null) {
+		if($input === NULL) {
+			$path = storage_path('app/public/homework_input.php');
+			$students_data = require_once($path);
+		} else {
+			$students_data = $input;
+		}
 		
 		if(!is_array($students_data)) {
 			echo "Érvénytelen bemeneti adat!";
@@ -98,7 +103,7 @@ class EvaluationController extends Controller {
 		return $students;
 	}
 	
-	private function __evaluate($student) {
+	protected function _evaluate($student) {
 		$base_points = 0;
 		$result = $this->__get_base_points($student, $base_points);
 		if($result !== 0) {
@@ -166,6 +171,9 @@ class EvaluationController extends Controller {
 			
 			foreach($student->exams as $exam) {
 				if($required_exam->name === $exam->name && $exam->result >= 20) {
+					if($required_exam->type === 'emelt' && $exam->type != 'emelt') {
+						break;
+					}
 					$requirement_passed = true;
 					$base_points += $exam->result;
 					break;
