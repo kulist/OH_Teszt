@@ -65,7 +65,7 @@ class EvaluationController extends Controller {
 			foreach($student_data['erettsegi-eredmenyek'] as $exam) {
 				$exam = new Exam($exam);
 				if($exam->type === 'emelt') {
-					$student->extra_points[] = new ExtraPoint([ 'kategoria' => 'Emeltszing' ]);
+					$student->extra_points[] = new ExtraPoint([ 'kategoria' => 'Emeltszint' ]);
 				}
 				$student->exams[] = $exam;
 			}
@@ -78,6 +78,6 @@ class EvaluationController extends Controller {
 			$students[] = $student;
 		}
 		
-		return $students_data;
+		return $students;
 	}
 }
