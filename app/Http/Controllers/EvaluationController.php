@@ -11,7 +11,7 @@ use App\Models\ExtraPoint;
 
 class EvaluationController extends Controller {
 	public const STR_ERROR = [
-		-1	=> 'Kötelező tantárgy nem sikerült!',
+		-1	=> 'Alaptantárgy nem sikerült!',
 		-2	=> 'Nem minden kötelező tárgyból tett vizsgát!',
 		-3	=> 'Kötelező vizsga nem teljesült!',
 		-4	=> 'Kötelezően választható vizsga nem teljesült!'
@@ -135,7 +135,7 @@ class EvaluationController extends Controller {
 				if($exam->result < 20) {
 					return -1;
 				}
-				$base_points += $exam->result;
+				//$base_points += $exam->result;
 				$passed_base_exams++;
 			}
 		}
@@ -144,12 +144,12 @@ class EvaluationController extends Controller {
 			return -2;
 		}
 		
-		$faculty_required = $this->__get_base_points_required($student, $base_subjects, $base_points);
+		$faculty_required = $this->__get_base_points_required($student, $base_points);
 		if($faculty_required !== 0) {
 			return $faculty_required;
 		}
 		
-		$faculty_req_optional = $this->__get_base_points_required_optional($student, $base_subjects, $base_points);
+		$faculty_req_optional = $this->__get_base_points_required_optional($student, $base_points);
 		if($faculty_req_optional !== 0) {
 			return $faculty_req_optional;
 		}
@@ -157,17 +157,11 @@ class EvaluationController extends Controller {
 		return 0;
 	}
 	
-	private function __get_base_points_required($student, $base_subjects, &$base_points) {
+	private function __get_base_points_required($student, &$base_points) {
 		// Check Faculty required subject
 		$faculty_required = $student->applied_faculty->required_subjects;
 		
 		foreach($faculty_required as $required_exam) {
-			if(in_array($required_exam->name, $base_subjects)) {
-				// If Faculty required subject is a base subject, 
-				// the points for them are already counted
-				continue;
-			}
-				
 			$requirement_passed = false;
 			
 			foreach($student->exams as $exam) {
@@ -186,19 +180,13 @@ class EvaluationController extends Controller {
 		return 0;
 	}
 	
-	private function __get_base_points_required_optional($student, $base_subjects, &$base_points) {
+	private function __get_base_points_required_optional($student, &$base_points) {
 		// Check Faculty required optional subjects
 		// One at least has to be successfully
 		$faculty_required_optional = $student->applied_faculty->required_subjects_optional;
 		
 		$matched_exams = [];
 		foreach($faculty_required_optional as $optional_exam) {
-			if(in_array($optional_exam->name, $base_subjects)) {
-				// If Faculty required subject is a base subject, 
-				// the points for them are already counted
-				continue;
-			}
-			
 			foreach($student->exams as $exam) {
 				if($optional_exam->name === $exam->name && $exam->result >= 20) {
 					$matched_exams[] = $exam;
