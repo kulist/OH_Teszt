@@ -4,7 +4,7 @@ namespace App\Models;
 
 class ExtraPoint
 {
-	public $category = "";		// Nyelvvizsga, Emelet szintű
+	public $category = "";		// Nyelvvizsga, Emeltszint
 	public $type = "";			// B2.. C1...
 	public $language = "";		// 
 	public $point = 0;
