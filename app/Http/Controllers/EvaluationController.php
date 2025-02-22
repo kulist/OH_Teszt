@@ -10,6 +10,7 @@ use App\Models\UniversityFaculty;
 use App\Models\ExtraPoint;
 
 class EvaluationController extends Controller {
+	// _evaluate státuszkódok
 	public const STR_ERROR = [
 		0	=> 'OK',
 		-1	=> 'Alaptantárgy nem sikerült!',
@@ -18,7 +19,7 @@ class EvaluationController extends Controller {
 		-4	=> 'Kötelezően választható vizsga nem teljesült!'
 	];
 	
-	// University Faculty requirements
+	// Oktatási intézmény felvételi követelmények definíciója
 	private function __faculty_requirements() {
 		return [
 			md5("ELTE_IK_Programtervező informatikus") => [
@@ -47,6 +48,18 @@ class EvaluationController extends Controller {
 		];
 	}
 	
+	/**************************************************************************
+	* [PUBLIC] index függvény a router elérést biztosítja. 
+	* 	Diákok adatainak betöltése és feldoldolgozása.
+	*
+	*	Arguments:
+	*		(void)
+	*
+	*	Return:
+	*		(void)
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	public function index()
     {
 		$student_data = $this->_load_student_data();
@@ -57,11 +70,23 @@ class EvaluationController extends Controller {
 			if(isset($result['error'])) {
 				echo ($id + 1) . ". Sikertelen vizsga: " . $result['error'] . '<br/>';
 			} else {
-				echo ($id + 1) . ". Alappont: " . $result['base'] . " Pluszpont: " . $result['extra'] . '<br/>';
+				echo ($id + 1) . ". Pontszám: " . ($result['base'] + $result['extra']) . " (Alappont: " . $result['base'] . " Pluszpont: " . $result['extra'] . ")<br/>";
 			}
 		}
     }
 	
+	/**************************************************************************
+	* [PROTECTED] Ez a függvény végzi el a bejövő adatok beolvasását és 
+	*	feldolgozását.
+	*
+	*	Arguments:
+	*		($input)	- Mixed(NULL|array)
+	*
+	*	Return:
+	*		(array)		- Betöltött és feldolgozott vizsga adatok
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	protected function _load_student_data($input = null) {
 		if($input === NULL) {
 			$path = storage_path('app/public/homework_input.php');
@@ -103,6 +128,17 @@ class EvaluationController extends Controller {
 		return $students;
 	}
 	
+	/**************************************************************************
+	* [PROTECTED] Ez a függvény végzi el a beolvasott adatok kiértékelését
+	*
+	*	Arguments:
+	*		($student)	- Student model
+	*
+	*	Return:
+	*		(array)		- A diák pontszámai vagy sikeretelen kiértékelés oka
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	protected function _evaluate($student) {
 		$base_points = 0;
 		$result = $this->__get_base_points($student, $base_points);
@@ -130,6 +166,18 @@ class EvaluationController extends Controller {
 		];
 	}
 	
+	/**************************************************************************
+	* [PRIVATE] Ez a függvény végzi el az adott diák alappontszámának számítását
+	*
+	*	Arguments:
+	*		($student)		- Student model
+	*		($base_point)	- Referencia(float) Az alap pontszámok összege
+	*
+	*	Return:
+	*		(int)			- STR_ERROR Hibakód, 0 - OK
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	private function __get_base_points($student, &$base_points) {
 		$base_subjects = [ 'magyar nyelv és irodalom', 'történelem', 'matematika' ];
 		
@@ -162,6 +210,19 @@ class EvaluationController extends Controller {
 		return 0;
 	}
 	
+	/**************************************************************************
+	* [PRIVATE] Ez a függvény végzi el az adott diák alappontszámához a kötelező
+	*	tantárgy kiértékelését és pontszámítását
+	*
+	*	Arguments:
+	*		($student)		- Student model
+	*		($base_point)	- Referencia(float) Az alap pontszámok összege
+	*
+	*	Return:
+	*		(int)			- STR_ERROR Hibakód, 0 - OK
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	private function __get_base_points_required($student, &$base_points) {
 		// Check Faculty required subject
 		$faculty_required = $student->applied_faculty->required_subjects;
@@ -188,6 +249,19 @@ class EvaluationController extends Controller {
 		return 0;
 	}
 	
+	/**************************************************************************
+	* [PRIVATE] Ez a függvény végzi el az adott diák alappontszámához a kötelezően
+	*	választható tantárgy kiértékelését és pontszámítását
+	*
+	*	Arguments:
+	*		($student)		- Student model
+	*		($base_point)	- Referencia(float) Az alap pontszámok összege
+	*
+	*	Return:
+	*		(int)			- STR_ERROR Hibakód, 0 - OK
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	private function __get_base_points_required_optional($student, &$base_points) {
 		// Check Faculty required optional subjects
 		// One at least has to be successfully
@@ -220,6 +294,19 @@ class EvaluationController extends Controller {
 		return 0;
 	}
 	
+	/**************************************************************************
+	* [PRIVATE] Ez a függvény végzi el az adott diák extra pontszámainak számtását
+	*	A többletpontok maximuma 100p.
+	*
+	*	Arguments:
+	*		($student)		- Student model
+	*		($extra_point)	- Referencia(float) Az extra pontszámok összege
+	*
+	*	Return:
+	*		(int)			- STR_ERROR Hibakód, 0 - OK
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	private function __get_extra_points($student, &$extra_points) {
 		$extra_points = 0;
 		

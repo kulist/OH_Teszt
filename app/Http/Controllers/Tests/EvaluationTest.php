@@ -10,6 +10,7 @@ use App\Models\UniversityFaculty;
 use App\Models\ExtraPoint;
 
 class EvaluationTest extends EvaluationController {
+	// Teszt esetek
 	private $test_data = [
 		[
 			'case' => [
@@ -133,6 +134,19 @@ class EvaluationTest extends EvaluationController {
 		],
 	];
 	
+	/**************************************************************************
+	* [PUBLIC] Router ide továbbítja a /test kérést. Ez a függvény a fentebb
+	*	definiált teszteseteket futtatja le a szülő osztályon és a kapott
+	*	értéket összeveti a várt [assert] értékel.
+	*
+	*	Arguments:
+	*		(void)			-
+	*
+	*	Return:
+	*		(void)			- 
+	*--------------------------------------------------------------------------
+	* Date: 2025.02.21.			Author: kulist		Checked:
+	*/
 	public function test() {
 		$start = microtime(true);
 		
