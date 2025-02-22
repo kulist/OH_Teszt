@@ -15,4 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'App\Http\Controllers\EvaluationController@index');
 
-Route::get('/test', 'App\Http\Controllers\Tests\EvaluationTest@test');
+if(config('app.debug') == true) {
+	Route::get('/test', 'App\Http\Controllers\Tests\EvaluationTest@test');
+}
