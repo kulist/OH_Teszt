@@ -105,7 +105,7 @@ class EvaluationTest extends EvaluationController {
 					[ 'nev' => 'magyar nyelv és irodalom', 'tipus' => 'közép', 'eredmeny' => '70%' ],
 					[ 'nev' => 'történelem', 'tipus' => 'közép', 'eredmeny' => '80%' ],
 					[ 'nev' => 'matematika', 'tipus' => 'emelt', 'eredmeny' => '90%' ],
-					[ 'nev' => 'angol nyelv', 'tipus' => 'közép', 'eredmeny' => '94%' ],
+					[ 'nev' => 'angol nyelv', 'tipus' => 'közép', 'eredmeny' => '94%' ],		// Nem teljesült
 					[ 'nev' => 'informatika', 'tipus' => 'közép', 'eredmeny' => '95%' ]
 				],
 				'tobbletpontok' => [
@@ -132,6 +132,40 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 348, 'extra' => 100, 'error' => parent::STR_ERROR[0] ]
 		],
+		[
+			'case' => [
+				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
+				'erettsegi-eredmenyek' => [
+					[ 'nev' => 'magyar nyelv és irodalom','tipus' => 'közép','eredmeny' => '70%' ],
+					[ 'nev' => 'történelem', 'tipus' => 'közép','eredmeny' => '80%' ],
+					[ 'nev' => 'matematika', 'tipus' => 'közép','eredmeny' => '90%' ],
+					[ 'nev' => 'angol nyelv', 'tipus' => 'közép','eredmeny' => '19%' ],		// Nem teljesült
+					[ 'nev' => 'informatika', 'tipus' => 'közép','eredmeny' => '95%' ],
+					[ 'nev' => 'testnevelés', 'tipus' => 'közép','eredmeny' => '98%' ]
+				],
+				'tobbletpontok' => [
+					[ 'kategoria' => 'Nyelvvizsga','tipus' => 'B2','nyelv' => 'angol' ]
+				]
+			],
+			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-5] ]
+		],
+		[
+			'case' => [
+				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
+				'erettsegi-eredmenyek' => [
+					[ 'nev' => 'magyar nyelv és irodalom','tipus' => 'közép','eredmeny' => '70%' ],
+					[ 'nev' => 'történelem', 'tipus' => 'közép','eredmeny' => '80%' ],
+					[ 'nev' => 'matematika', 'tipus' => 'közép','eredmeny' => '90%' ],
+					[ 'nev' => 'angol nyelv', 'tipus' => 'közép','eredmeny' => '76%' ],
+					[ 'nev' => 'német nyelv', 'tipus' => 'közép','eredmeny' => '95%' ],
+					[ 'nev' => 'testnevelés', 'tipus' => 'közép','eredmeny' => '98%' ]		// Kötelezően választható nem teljesült
+				],
+				'tobbletpontok' => [
+					[ 'kategoria' => 'Nyelvvizsga','tipus' => 'B2','nyelv' => 'angol' ]
+				]
+			],
+			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-4] ]
+		]
 	];
 	
 	/**************************************************************************

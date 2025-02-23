@@ -16,7 +16,8 @@ class EvaluationController extends Controller {
 		-1	=> 'Alaptantárgy nem sikerült!',
 		-2	=> 'Nem minden kötelező tárgyból tett vizsgát!',
 		-3	=> 'Kötelező vizsga nem teljesült!',
-		-4	=> 'Kötelezően választható vizsga nem teljesült!'
+		-4	=> 'Kötelezően választható vizsga nem teljesült!',
+		-5	=> 'Egy tantárgyi vizsga eredménye nem érite el a 20%-ot'
 	];
 	
 	// Oktatási intézmény felvételi követelmények definíciója
@@ -188,8 +189,11 @@ class EvaluationController extends Controller {
 				if($exam->result < 20) {
 					return -1;
 				}
-				//$base_points += $exam->result;
 				$passed_base_exams++;
+			}
+			
+			if($exam->result < 20) {
+				return -5;
 			}
 		}
 		
