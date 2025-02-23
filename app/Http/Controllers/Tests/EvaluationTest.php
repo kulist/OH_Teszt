@@ -12,6 +12,7 @@ use App\Models\ExtraPoint;
 class EvaluationTest extends EvaluationController {
 	// Teszt esetek
 	private $test_data = [
+		// Pontszámítás lehetséges, emelet szintű tantárgy és közép- és emeletszintű nyelvvizsga felszámolása
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -29,6 +30,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 370, 'extra' => 100, 'error' => parent::STR_ERROR[0] ]
 		],
+		// Pontszámítás lehetséges, több kötelező tantárgy teljesítése esetén nagyobb pontszám felszámolása
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -47,6 +49,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 376, 'extra' => 100, 'error' => parent::STR_ERROR[0] ]
 		],
+		// Alaptantárgyak közül az egyiket nem teljesítette a diák (történelem)
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -63,6 +66,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-2] ]
 		],
+		// Egyik tantárgyból nem sikerült a vizsga (20% alatti eredmény)
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -80,6 +84,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-1] ]
 		],
+		// Ugyanabból a nyelvből két szinten is vizsgázott a diák
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -98,6 +103,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 376, 'extra' => 40, 'error' => parent::STR_ERROR[0] ]
 		],
+		// Intézményi kötelező tantárgy nem teljesült
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'PPKE', 'kar' => 'BTK', 'szak' => 'Anglisztika' ],
@@ -115,6 +121,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-3] ]
 		],
+		// Diák minden feltételnek megfelelt - pontszámítás
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'PPKE', 'kar' => 'BTK', 'szak' => 'Anglisztika' ],
@@ -132,6 +139,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 348, 'extra' => 100, 'error' => parent::STR_ERROR[0] ]
 		],
+		// Diák olyan tantárgyból bukott, ami nincs a kötelező három tantárgy között és nem felsőoktatási intézmény által megkövetelt
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
@@ -149,6 +157,7 @@ class EvaluationTest extends EvaluationController {
 			],
 			'assert' => [ 'base' => 0, 'extra' => 0, 'error' => parent::STR_ERROR[-5] ]
 		],
+		// Diák nem teljesített egy az intézmény által kötelezően választható tantárgyat se
 		[
 			'case' => [
 				'valasztott-szak' => [ 'egyetem' => 'ELTE', 'kar' => 'IK', 'szak' => 'Programtervező informatikus' ],
